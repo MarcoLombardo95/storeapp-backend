@@ -191,7 +191,12 @@ public class ActivityService {
         event.reservationTime = updatedEvent.reservationTime;
         event.isCompleted = updatedEvent.isCompleted;
         event.displayOrder = updatedEvent.displayOrder;
-        
+
+        // Aggiorna i partecipanti se specificati nella richiesta
+        if (request.participantIds != null) {
+            updateActivityParticipants(event, request.participantIds, event.group);
+        }
+
         return eventMapper.toDto(event);
     }
 
@@ -224,12 +229,15 @@ public class ActivityService {
         trip.origin = updatedTrip.origin;
         trip.destination = updatedTrip.destination;
         trip.transportMode = updatedTrip.transportMode;
-        trip.departureTime = updatedTrip.departureTime;
-        trip.arrivalTime = updatedTrip.arrivalTime;
         trip.bookingReference = updatedTrip.bookingReference;
         trip.isCompleted = updatedTrip.isCompleted;
         trip.displayOrder = updatedTrip.displayOrder;
-        
+
+        // Aggiorna i partecipanti se specificati nella richiesta
+        if (request.participantIds != null) {
+            updateActivityParticipants(trip, request.participantIds, trip.group);
+        }
+
         return tripMapper.toDto(trip);
     }
 
@@ -443,6 +451,45 @@ public class ActivityService {
         }
 
         expenseRepository.delete(expense);
+    }
+
+    /**
+     * Aggiorna i partecipanti di un'attività esistente.
+     * Rimuove i partecipanti non più presenti e aggiunge i nuovi.
+     * Grazie a orphanRemoval=true sulla collection, i rimossi vengono
+     * automaticamente eliminati dal DB al flush della transazione.
+     */
+    private void updateActivityParticipants(Activity activity, java.util.List<Long> newParticipantIds, Group group) {
+        // Rimuovi dalla collection i partecipanti non presenti nella nuova lista
+        // (orphanRemoval=true li cancella automaticamente dal DB)
+        activity.participants.removeIf(existing ->
+                !newParticipantIds.contains(existing.groupMember.id));
+
+        // Aggiungi i nuovi partecipanti non ancora presenti
+        java.util.Set<Long> existingMemberIds = activity.participants.stream()
+                .map(p -> p.groupMember.id)
+                .collect(java.util.stream.Collectors.toSet());
+
+        for (Long memberId : newParticipantIds) {
+            if (!existingMemberIds.contains(memberId)) {
+                GroupMember groupMember = group.members.stream()
+                        .filter(m -> m.id.equals(memberId))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "GroupMember " + memberId + " not found in group " + group.id));
+
+                com.storeapp.activity.entity.ActivityParticipant participant =
+                        new com.storeapp.activity.entity.ActivityParticipant();
+                participant.activity = activity;
+                participant.groupMember = groupMember;
+                participant.status = com.storeapp.activity.entity.ParticipantStatus.CONFIRMED;
+                participant.balance = java.math.BigDecimal.ZERO;
+                participant.createdAt = java.time.LocalDateTime.now();
+                participant.updatedAt = java.time.LocalDateTime.now();
+
+                activity.participants.add(participant);
+            }
+        }
     }
 
     /**

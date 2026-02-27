@@ -19,11 +19,11 @@ public class TripDto {
     public String name;
     public String description;
 
-    // Date/time fields
-    public LocalDate startDate;
-    public LocalDate endDate;
-    public LocalTime startTime;
-    public LocalTime endTime;
+    // Date/time fields with Trip-semantic names
+    public LocalDate departureDate;
+    public LocalDate arrivalDate;
+    public LocalTime departureTime;
+    public LocalTime arrivalTime;
 
     // Activity type discriminator
     public String activityType = "TRIP";
@@ -34,8 +34,6 @@ public class TripDto {
 
     // Trip-specific fields
     public TransportMode transportMode;
-    public LocalTime departureTime;
-    public LocalTime arrivalTime;
     public String bookingReference;
 
     // Common fields
@@ -57,50 +55,19 @@ public class TripDto {
 
     // Helper methods
     public boolean isMultiDay() {
-        return endDate != null && !endDate.equals(startDate);
+        return arrivalDate != null && !arrivalDate.equals(departureDate);
     }
 
     public int getDurationDays() {
-        if (endDate == null || startDate == null) {
+        if (arrivalDate == null || departureDate == null) {
             return 1;
         }
-        return (int) java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(departureDate, arrivalDate) + 1;
     }
 
     public String getRoute() {
         String originName = (origin != null) ? origin.getDisplayName() : "?";
         String destName = (destination != null) ? destination.getDisplayName() : "?";
         return originName + " → " + destName;
-    }
-
-    // Semantic aliases for Trip (departure/arrival instead of start/end)
-    // These map to the base startDate/endDate fields for better UX
-    
-    /**
-     * Get departure date (alias for startDate)
-     */
-    public LocalDate getDepartureDate() {
-        return this.startDate;
-    }
-
-    /**
-     * Set departure date (alias for startDate)
-     */
-    public void setDepartureDate(LocalDate departureDate) {
-        this.startDate = departureDate;
-    }
-
-    /**
-     * Get arrival date (alias for endDate)
-     */
-    public LocalDate getArrivalDate() {
-        return this.endDate;
-    }
-
-    /**
-     * Set arrival date (alias for endDate)
-     */
-    public void setArrivalDate(LocalDate arrivalDate) {
-        this.endDate = arrivalDate;
     }
 }

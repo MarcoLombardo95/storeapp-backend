@@ -3,8 +3,6 @@ package com.storeapp.activity.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalTime;
-
 /**
  * Trip - Travel activity with origin and destination
  * 
@@ -50,12 +48,6 @@ public class Trip extends Activity {
     @Enumerated(EnumType.STRING)
     @Column(name = "trip_transport_mode", nullable = false, length = 50)
     public TransportMode transportMode = TransportMode.OTHER;
-
-    @Column(name = "trip_departure_time")
-    public LocalTime departureTime;
-
-    @Column(name = "trip_arrival_time")
-    public LocalTime arrivalTime;
 
     @Size(max = 255)
     @Column(name = "trip_booking_reference", length = 255)
@@ -110,35 +102,19 @@ public class Trip extends Activity {
     }
 
     // Semantic aliases for Trip (departure/arrival instead of start/end)
-    // These map to the inherited startDate/endDate fields
+    // These map to the inherited startDate/endDate/startTime/endTime fields
     
-    /**
-     * Get departure date (alias for startDate)
-     */
-    public java.time.LocalDate getDepartureDate() {
-        return this.startDate;
-    }
+    public java.time.LocalDate getDepartureDate() { return this.startDate; }
+    public void setDepartureDate(java.time.LocalDate d) { this.startDate = d; }
 
-    /**
-     * Set departure date (alias for startDate)
-     */
-    public void setDepartureDate(java.time.LocalDate departureDate) {
-        this.startDate = departureDate;
-    }
+    public java.time.LocalDate getArrivalDate() { return this.endDate; }
+    public void setArrivalDate(java.time.LocalDate d) { this.endDate = d; }
 
-    /**
-     * Get arrival date (alias for endDate)
-     */
-    public java.time.LocalDate getArrivalDate() {
-        return this.endDate;
-    }
+    public java.time.LocalTime getDepartureTime() { return this.startTime; }
+    public void setDepartureTime(java.time.LocalTime t) { this.startTime = t; }
 
-    /**
-     * Set arrival date (alias for endDate)
-     */
-    public void setArrivalDate(java.time.LocalDate arrivalDate) {
-        this.endDate = arrivalDate;
-    }
+    public java.time.LocalTime getArrivalTime() { return this.endTime; }
+    public void setArrivalTime(java.time.LocalTime t) { this.endTime = t; }
 
     @Override
     public String toString() {

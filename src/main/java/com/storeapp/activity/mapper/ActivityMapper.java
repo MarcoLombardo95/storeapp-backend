@@ -69,8 +69,8 @@ public class ActivityMapper {
             dto.transportMode = trip.transportMode != null ? trip.transportMode.name() : null;
             dto.origin = trip.origin;
             dto.destination = trip.destination;
-            dto.departureTime = trip.departureTime;
-            dto.arrivalTime = trip.arrivalTime;
+            dto.departureTime = trip.getDepartureTime();
+            dto.arrivalTime = trip.getArrivalTime();
             dto.bookingReference = trip.bookingReference;
         }
         

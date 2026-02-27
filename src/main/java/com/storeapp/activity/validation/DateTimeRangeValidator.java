@@ -28,10 +28,10 @@ public class DateTimeRangeValidator implements ConstraintValidator<ValidDateTime
     }
 
     private boolean validateEventRequest(EventRequest request, ConstraintValidatorContext context) {
-        // All fields must be non-null
+        // La validazione cross-field si applica solo se tutti i campi sono presenti
         if (request.startDate == null || request.endDate == null || 
             request.startTime == null || request.endTime == null) {
-            return false; // Let @NotNull handle this
+            return true; // campi opzionali assenti: nessun controllo cross-field
         }
 
         LocalDateTime start = LocalDateTime.of(request.startDate, request.startTime);
@@ -49,14 +49,14 @@ public class DateTimeRangeValidator implements ConstraintValidator<ValidDateTime
     }
 
     private boolean validateTripRequest(TripRequest request, ConstraintValidatorContext context) {
-        // All fields must be non-null
-        if (request.startDate == null || request.endDate == null || 
+        // La validazione cross-field si applica solo se tutti i campi sono presenti
+        if (request.departureDate == null || request.arrivalDate == null || 
             request.departureTime == null || request.arrivalTime == null) {
-            return false; // Let @NotNull handle this
+            return true; // campi opzionali assenti: nessun controllo cross-field
         }
 
-        LocalDateTime start = LocalDateTime.of(request.startDate, request.departureTime);
-        LocalDateTime end = LocalDateTime.of(request.endDate, request.arrivalTime);
+        LocalDateTime start = LocalDateTime.of(request.departureDate, request.departureTime);
+        LocalDateTime end = LocalDateTime.of(request.arrivalDate, request.arrivalTime);
 
         if (!end.isAfter(start)) {
             context.disableDefaultConstraintViolation();

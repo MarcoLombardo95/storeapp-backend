@@ -26,15 +26,14 @@ public class TripRequest {
 
     public String description;
 
-    @NotNull(message = "La data di inizio è obbligatoria")
-    public LocalDate startDate;
+    @NotNull(message = "La data di partenza è obbligatoria")
+    public LocalDate departureDate;
 
-    @NotNull(message = "La data di fine è obbligatoria")
-    public LocalDate endDate;
+    public LocalDate arrivalDate;
 
-    public LocalTime startTime;
+    public LocalTime departureTime;
 
-    public LocalTime endTime;
+    public LocalTime arrivalTime;
 
     // Origin location (embedded)
     @Size(max = 500, message = "Il nome dell'origine non può superare 500 caratteri")
@@ -72,12 +71,6 @@ public class TripRequest {
     @NotNull(message = "Il mezzo di trasporto è obbligatorio")
     public TransportMode transportMode = TransportMode.OTHER;
 
-    @NotNull(message = "L'ora di partenza è obbligatoria")
-    public LocalTime departureTime;
-
-    @NotNull(message = "L'ora di arrivo è obbligatoria")
-    public LocalTime arrivalTime;
-
     @Size(max = 255, message = "Il riferimento prenotazione non può superare 255 caratteri")
     public String bookingReference;
 
@@ -91,35 +84,4 @@ public class TripRequest {
     // Participants - IDs of GroupMembers participating in this activity (at least one required)
     @NotEmpty(message = "Almeno un partecipante è obbligatorio")
     public List<Long> participantIds;
-
-    // Semantic aliases for Trip (departure/arrival instead of start/end)
-    // These map to the base startDate/endDate fields for better UX
-    
-    /**
-     * Get departure date (alias for startDate)
-     */
-    public LocalDate getDepartureDate() {
-        return this.startDate;
-    }
-
-    /**
-     * Set departure date (alias for startDate)
-     */
-    public void setDepartureDate(LocalDate departureDate) {
-        this.startDate = departureDate;
-    }
-
-    /**
-     * Get arrival date (alias for endDate)
-     */
-    public LocalDate getArrivalDate() {
-        return this.endDate;
-    }
-
-    /**
-     * Set arrival date (alias for endDate)
-     */
-    public void setArrivalDate(LocalDate arrivalDate) {
-        this.endDate = arrivalDate;
-    }
 }

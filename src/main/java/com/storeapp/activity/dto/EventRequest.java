@@ -29,13 +29,10 @@ public class EventRequest {
     @NotNull(message = "La data di inizio è obbligatoria")
     public LocalDate startDate;
 
-    @NotNull(message = "La data di fine è obbligatoria")
     public LocalDate endDate;
 
-    @NotNull(message = "L'ora di inizio è obbligatoria")
     public LocalTime startTime;
 
-    @NotNull(message = "L'ora di fine è obbligatoria")
     public LocalTime endTime;
 
     // Location (embedded)

@@ -30,10 +30,10 @@ public class TripMapper {
         dto.groupId = entity.group != null ? entity.group.id : null;
         dto.name = entity.name;
         dto.description = entity.description;
-        dto.startDate = entity.startDate;
-        dto.endDate = entity.endDate;
-        dto.startTime = entity.startTime;
-        dto.endTime = entity.endTime;
+        dto.departureDate = entity.startDate;
+        dto.arrivalDate = entity.endDate;
+        dto.departureTime = entity.startTime;
+        dto.arrivalTime = entity.endTime;
         dto.activityType = "TRIP";
 
         // Locations
@@ -42,8 +42,6 @@ public class TripMapper {
 
         // Trip-specific fields
         dto.transportMode = entity.transportMode;
-        dto.departureTime = entity.departureTime;
-        dto.arrivalTime = entity.arrivalTime;
         dto.bookingReference = entity.bookingReference;
 
         // Common fields
@@ -83,10 +81,10 @@ public class TripMapper {
 
         entity.name = request.name;
         entity.description = request.description;
-        entity.startDate = request.startDate;
-        entity.endDate = request.endDate;
-        entity.startTime = request.startTime;
-        entity.endTime = request.endTime;
+        entity.startDate = request.departureDate;
+        entity.endDate = request.arrivalDate;
+        entity.startTime = request.departureTime;
+        entity.endTime = request.arrivalTime;
 
         // Origin location
         if (entity.origin == null) {
@@ -112,8 +110,6 @@ public class TripMapper {
 
         // Trip-specific fields
         entity.transportMode = request.transportMode;
-        entity.departureTime = request.departureTime;
-        entity.arrivalTime = request.arrivalTime;
         entity.bookingReference = request.bookingReference;
 
         // Common fields
