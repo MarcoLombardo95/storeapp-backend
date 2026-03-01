@@ -9,6 +9,8 @@ import com.storeapp.group.mapper.GroupMapper;
 import com.storeapp.group.mapper.GroupMemberMapper;
 import com.storeapp.group.repository.GroupMemberRepository;
 import com.storeapp.group.repository.GroupRepository;
+import com.storeapp.activity.repository.ActivityParticipantRepository;
+import com.storeapp.activity.repository.ActivityExpenseSplitRepository;
 import com.storeapp.user.entity.User;
 import com.storeapp.user.mapper.UserMapper;
 import com.storeapp.user.repository.UserRepository;
@@ -34,6 +36,12 @@ public class GroupService {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    ActivityParticipantRepository activityParticipantRepository;
+
+    @Inject
+    ActivityExpenseSplitRepository activityExpenseSplitRepository;
 
     @Inject
     GroupMapper groupMapper;
@@ -370,6 +378,14 @@ public class GroupService {
             if (adminCount <= 1) {
                 throw InvalidOperationException.lastAdminCannotLeave();
             }
+        }
+
+        // Verifica che il membro non sia coinvolto in attività o spese
+        long activityCount = activityParticipantRepository.count("groupMember.id", memberId);
+        long expenseCount = activityExpenseSplitRepository.count("groupMember.id", memberId);
+        if (activityCount > 0 || expenseCount > 0) {
+            String memberName = memberToRemove.user.getName();
+            throw InvalidOperationException.memberInvolvedInActivities(memberName, activityCount, expenseCount);
         }
 
         long deletedCount = groupMemberRepository.removeMemberById(memberId);
