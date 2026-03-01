@@ -29,7 +29,7 @@ public class ActivityCalendarRepository {
             SELECT DISTINCT
                 ac.id, ac.group_id, ac.title, ac.description,
                 ac.start_time, ac.end_time,
-                ac.day_of_week, ac.activity_date,
+                ac.day_of_week, ac.activity_date, ac.end_date,
                 ac.location_name, ac.location_lat, ac.location_lng,
                 ac.is_completed, ac.calendar_status,
                 ac.confirmed_count, ac.maybe_count, ac.declined_count, ac.total_members,
@@ -65,7 +65,7 @@ public class ActivityCalendarRepository {
             SELECT DISTINCT
                 ac.id, ac.group_id, ac.title, ac.description,
                 ac.start_time, ac.end_time,
-                ac.day_of_week, ac.activity_date,
+                ac.day_of_week, ac.activity_date, ac.end_date,
                 ac.location_name, ac.location_lat, ac.location_lng,
                 ac.is_completed, ac.calendar_status,
                 ac.confirmed_count, ac.maybe_count, ac.declined_count, ac.total_members,
@@ -113,6 +113,7 @@ public class ActivityCalendarRepository {
         }
         
         dto.activityDate = row[i++] != null ? ((java.sql.Date) row[i-1]).toLocalDate() : null;
+        dto.endDate = row[i++] != null ? ((java.sql.Date) row[i-1]).toLocalDate() : null;
         
         dto.locationName = (String) row[i++];
         dto.locationLat = row[i++] != null ? ((Number) row[i-1]).doubleValue() : null;

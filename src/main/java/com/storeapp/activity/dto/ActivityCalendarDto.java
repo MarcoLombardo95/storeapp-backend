@@ -18,6 +18,7 @@ public class ActivityCalendarDto {
     public LocalDateTime end;
     public DayOfWeek dayOfWeek;
     public LocalDate activityDate;
+    public LocalDate endDate; // null se attività single-day
     public String calendarStatus; // completed, confirmed, declined, pending
     public String description;
     public String locationName;
