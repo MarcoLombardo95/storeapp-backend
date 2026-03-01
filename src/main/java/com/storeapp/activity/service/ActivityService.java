@@ -483,7 +483,7 @@ public class ActivityService {
 
         // Aggiorna totalCost dell'attività
         BigDecimal newTotal = expenseRepository.getTotalByActivityId(activityId);
-        activity.totalCost = newTotal;
+        activity.totalCost = newTotal != null ? newTotal : BigDecimal.ZERO;
         activityRepository.persist(activity);
 
         expenseRepository.getEntityManager().flush();
@@ -515,7 +515,14 @@ public class ActivityService {
             throw new RuntimeException("User is not a member of this group");
         }
 
+        Activity activity = expense.activity;
         expenseRepository.delete(expense);
+        expenseRepository.getEntityManager().flush();
+
+        // Ricalcola totalCost dopo la cancellazione
+        BigDecimal newTotal = expenseRepository.getTotalByActivityId(activity.id);
+        activity.totalCost = newTotal != null ? newTotal : BigDecimal.ZERO;
+        activityRepository.persist(activity);
     }
 
     /**
