@@ -84,3 +84,37 @@ Easily start your REST Web Services
 Monitor your application's health using SmallRye Health
 
 [Related guide section...](https://quarkus.io/guides/smallrye-health)
+
+## Gmail SMTP (Real Password Reset Emails)
+
+To send real reset-password emails with Gmail:
+
+1. Enable Google 2-Step Verification on your account.
+2. Generate a Gmail App Password (16 characters).
+3. Copy `backend/.env.gmail.example` to `backend/.env` and set your values.
+4. Start backend from `backend/` folder.
+
+PowerShell example:
+
+```powershell
+Get-Content .env | ForEach-Object {
+	if ($_ -match '^(?<k>[^#=]+)=(?<v>.*)$') {
+		[System.Environment]::SetEnvironmentVariable($Matches.k, $Matches.v, 'Process')
+	}
+}
+
+.\mvnw.cmd quarkus:dev
+```
+
+Alternative (recommended):
+
+```powershell
+.\start-dev-with-env.ps1
+```
+
+This script loads `.env`, validates missing/placeholder SMTP values, and starts Quarkus in the same process.
+
+Important:
+- `MAIL_MOCK` must be `false`.
+- `MAIL_FROM` should match or be authorized by the Gmail account/provider policy.
+- For Gmail, use App Password, not your normal account password.
